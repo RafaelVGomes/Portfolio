@@ -4,4 +4,6 @@ You'll notice that most materials, if not all of them, on this portfolio will la
 
 Thank you for your visit.
 
+P.S.: Don't forget to take a look on "development" branches, ok?
+
 - Rafael Gomes
