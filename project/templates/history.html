@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    History
+{% endblock title %}
+
+{% block main %}
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Trade</th>
+                <th>Amount</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if historic %}
+                {% for transaction in historic %}
+                    <tr>
+                        <td>{{ transaction['date']      }}</td>
+                        <td>{{ transaction['trade']     }}</td>
+                        <td>{{ transaction['amount']    }}</td>
+                        <td>{{ transaction['price']|usd }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4">No historic to show</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+{% endblock main %}

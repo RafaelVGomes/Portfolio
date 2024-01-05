@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Items
+{% endblock title %}
+
+{% block main %}
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Amount</th>
+                <th>Measure</th>
+                <th>Purchase Price</th>
+                {# <th>Is Product?</th> #}
+                {# <th>Sale Price</th> #}
+                <th>Quantity Alert</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if items %}
+                {% for item in items %}
+                    <tr>
+                        <td>{{ item['item_name']|title }}</td>
+                        <td>{{ item['amount']  }}</td>
+                        <td>{{ item['measure']  }}</td>
+                        <td id="{{ item['item_name'] }}-price">
+                            {{ item['price']|usd   }}
+                        </td>
+                        {# <td>
+                            {% if item['is_product'] == 0 %}
+                                No
+                            {% else %}
+                                Yes
+                            {% endif %}
+                        </td> #}
+                        {# <td id="{{ item['item_name'] }}-salePrice">
+                            {% if item['sale_price'] %}
+                                {{ item['sale_price']|usd   }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td> #}
+                        <td>{{ item['quantity_alert']  }}</td>
+                        <td>
+                            <div class="d-flex justify-content-evenly">
+                                <a href="/upd-item/{{ item['id'] }}" role="button" class="btn btn-primary">Edit</a>
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-{{item['id'] }}">
+                                    Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Modals -->
+                    <div class="modal fade" id="delete-{{ item['id'] }}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="bi bi-exclamation-triangle-fill text-danger"></i> Irreversible action!</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body fs-6">
+                                    Do you want to delete the item "{{ item['item_name']|title }}"?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                    <a href="/del-item/{{ item['id'] }}" role="button" class="btn btn-danger">Yes</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="7">Add some items</td>
+                </tr>
+            {% endif %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="8">
+                    <a href="/add-item" role="button" class="btn btn-success">Add Item</a>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+{% endblock main %}

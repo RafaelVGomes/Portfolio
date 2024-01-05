@@ -1,0 +1,64 @@
+<table class="table table-hover align-middle">
+    <thead>
+        <h2>Products</h2>
+        <tr>
+            <th>Product</th>
+            <th>Amount</th>
+            <th>Measure</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if products %}
+            {% for product in products %}
+                <tr>
+                    <td>{{ product['product_name']|title }}</td>
+                    <td>{{ product['amount']  }}</td>
+                    <td>{{ product['measure']  }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="4">Add some products</td>
+            </tr>
+        {% endif %}
+    </tbody>
+    <tfoot><tr></tr></tfoot>
+</table>
+
+<table class="table table-hover align-middle">
+    <thead>
+        <h2>Items</h2>
+        <tr>
+            <th class="col-1">Stock Low</th>
+            <th>Item</th>
+            <th>Amount</th>
+            <th>Measure</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if items %}
+            {% for item in items %}
+                <tr>
+                    <td class="col-1">
+                        {% if item['amount'] <= item['quantity_alert'] %}
+                            <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                        {% else %}
+                        {% endif %}
+                    </td>
+                    <td>{{ item['item_name']|title }}</td>
+                    <td>{{ item['amount']  }}</td>
+                    <td>{{ item['measure']  }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="7">Add some items</td>
+            </tr>
+        {% endif %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td class="text-end" colspan="4"><b>Cash:</b> {{ data['cash']|usd }}</td>
+        </tr>
+    </tfoot>
+</table>

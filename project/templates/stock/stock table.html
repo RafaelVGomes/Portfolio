@@ -1,0 +1,40 @@
+<table class="table table-hover align-middle">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Amount</th>
+            <th>Measure</th>
+            <th>Price</th>
+            <th>Amount to Sell</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if products %}
+            {% for product in products %}
+                <tr class="productLine" id="{{ product['id'] }}">
+                    <td>{{ product['product_name']|title }}</td>
+                    <td id="amount_{{ product['id'] }}">
+                        {{ product['amount'] }}
+                    </td>
+                    <td>{{ product['measure'] }}</td>
+                    <td>{{ product['price']|usd }}</td>
+                    <form action="sell/{{ product['id'] }}" method="POST">
+                        <td class="col-1">
+                            <input autocomplete="off" class="form-control mx-auto w-auto" id="amount_sell_{{ product['id'] }}" name="amount_sell_{{ product['id'] }}" placeholder="Amount" type="number" step="1" min="0" value="1">
+                        </td>
+                        <td>
+                            <div class="d-flex justify-content-evenly">
+                                <input type="submit" class="btn btn-success" value="Sell" {% if product['amount'] == 0 %}disabled{% endif %}>
+                            </div>
+                        </td>
+                    </form>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="4">Add some products</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
