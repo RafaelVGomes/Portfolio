@@ -1,2 +1,15 @@
-.env/
-__pycache__
+venv/
+flask_session/
+
+*.pyc
+__pycache__/
+
+instance/
+
+.pytest_cache/
+.coverage
+htmlcov/
+
+dist/
+build/
+*.egg-info/
