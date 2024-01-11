@@ -35,9 +35,12 @@ def create_app():
     except OSError:
         pass
 
-    from virtual_manager import routes
-
     from . import db
     db.init_app(app)
+
+    from virtual_manager import views
+    app.register_blueprint(views.index.bp)
+    app.add_url_rule('/', endpoint='index')
+    app.register_blueprint(views.auth.bp)
 
     return app
