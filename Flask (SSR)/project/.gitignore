@@ -1,4 +1,4 @@
-venv/
+.venv/
 flask_session/
 
 *.pyc
