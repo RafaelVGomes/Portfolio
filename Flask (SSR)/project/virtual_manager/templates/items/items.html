@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Items
+    Items - Overview
 {% endblock title %}
 
 {% block main %}
@@ -81,7 +81,7 @@
         <tfoot>
             <tr>
                 <td colspan="8">
-                    <a href="/add-item" role="button" class="btn btn-success">Add Item</a>
+                    <a href="{{ url_for('items.add') }}" role="button" class="btn btn-success">Add Item</a>
                 </td>
             </tr>
         </tfoot>

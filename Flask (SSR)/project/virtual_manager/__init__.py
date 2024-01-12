@@ -42,5 +42,6 @@ def create_app():
     app.register_blueprint(views.index.bp)
     app.add_url_rule('/', endpoint='index')
     app.register_blueprint(views.auth.bp)
+    app.register_blueprint(views.items.bp)
 
     return app
