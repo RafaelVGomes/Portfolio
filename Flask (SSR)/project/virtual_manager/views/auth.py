@@ -43,7 +43,7 @@ def register():
       error = 'Password is required.'
     elif not confirmation:
       error = 'Password confirmation is required.'
-    if password != confirmation:
+    elif password != confirmation:
       error = "Password confirmation doesn't match"
 
     if error is None:
