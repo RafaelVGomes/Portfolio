@@ -1,5 +1,4 @@
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
-from werkzeug.security import generate_password_hash
 
 from virtual_manager.db import get_db
 from virtual_manager.views.auth import login_required
@@ -11,15 +10,15 @@ bp = Blueprint('index', __name__)
 @login_required
 def index():
   """Show portfolio of stocks"""
-  db = get_db()
-  USER_ID = session['user_id']
-  # cash = db.execute("SELECT cash FROM business;")[0]['cash']
-  items = db.execute("SELECT * FROM items;")
-  products = db.execute("SELECT * FROM products;")
-  recipes = db.execute("SELECT * FROM recipes;")
+  db = get_db().cursor()
+  user_id = session['user_id']
+  cash = db.execute("SELECT cash FROM users WHERE id = ?;", (user_id,)).fetchone()['cash']
+  items = db.execute("SELECT * FROM items;").fetchall()
+  products = db.execute("SELECT * FROM products;").fetchall()
+  recipes = db.execute("SELECT * FROM recipes;").fetchall()
 
   data = {
-      'cash': 0,
+      'cash': cash,
       'products': products,
       'purchases_total': 0,
       'overall': 0
