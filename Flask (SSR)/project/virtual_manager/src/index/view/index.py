@@ -1,10 +1,10 @@
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
 from virtual_manager.db import get_db
-from virtual_manager.views.auth import login_required
+from virtual_manager.src.auth.view.auth import login_required
 
 
-bp = Blueprint('index', __name__)
+bp = Blueprint('index', __name__, template_folder='../html')
 
 @bp.route("/")
 @login_required
@@ -29,5 +29,5 @@ def index():
   # if request.args['data'] == 'table':
   #   return render_template("index/index_table.html", data=data)
   # else:
-  return render_template("index/index.html", data=data, items=items, products=products)
+  return render_template("index.html", data=data, items=items, products=products)
   

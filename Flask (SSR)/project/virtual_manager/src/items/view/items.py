@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, redirect, render_template, request, g, url_for
 
 from virtual_manager.db import get_db
-from virtual_manager.views.auth import login_required
+from virtual_manager.src.auth.view.auth import login_required
 
 
 bp = Blueprint('items', __name__, url_prefix='/items')

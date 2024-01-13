@@ -38,10 +38,10 @@ def create_app():
     from . import db
     db.init_app(app)
 
-    from virtual_manager import views
-    app.register_blueprint(views.index.bp)
+    from virtual_manager import src
+    app.register_blueprint(src.index.bp)
     app.add_url_rule('/', endpoint='index')
-    app.register_blueprint(views.auth.bp)
-    app.register_blueprint(views.items.bp)
+    app.register_blueprint(src.auth.bp)
+    app.register_blueprint(src.items.bp)
 
     return app

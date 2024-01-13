@@ -14,7 +14,7 @@ def login_required(view):
   return wrapped_view
 
 
-bp = Blueprint('auth', __name__, url_prefix='/auth')
+bp = Blueprint('auth', __name__, url_prefix='/auth', template_folder='../html')
 
 @bp.before_app_request
 def load_logged_in_user():
@@ -60,7 +60,7 @@ def register():
 
     flash(error)
 
-  return render_template('auth/register.html')
+  return render_template('register.html')
 
 
 @bp.route('/login', methods=('GET', 'POST'))
@@ -86,7 +86,7 @@ def login():
 
     flash(error)
 
-  return render_template('auth/login.html')
+  return render_template('login.html')
 
 
 @bp.route('/logout')

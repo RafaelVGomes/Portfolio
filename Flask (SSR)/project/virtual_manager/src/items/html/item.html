@@ -42,7 +42,7 @@ Item {% if item %}- Update {% else %}- Add {% endif %}
 {% else %}
     {% set form_action = url_for('items.add') %}
 {% endif %}
-<form action="{{ form_action }}" method="POST" enctype="">
+<form action="{{ form_action }}" method="POST">
     {% if item %}
         <div class="mx-auto w-auto mb-3">
             <b>{{ item.item_name }}</b>
