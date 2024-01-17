@@ -23,17 +23,17 @@ $(document).ready(function () {
       $('#username_error').html(`
         <span class="text-success" id="username_status"><i class="bi bi-check-circle"></i> Username available.</span>
       `)
-      $('#submit_btn').prop('disabled', false)
+      $('#submit-btn').prop('disabled', false)
     } else if (flag == true) {
       $('#username_error').html(`
         <span class="text-danger" id="username_status"><i class="bi bi-x-circle"></i> Username unavailable.</span>
       `)
-      $('#submit_btn').prop('disabled', true)
+      $('#submit-btn').prop('disabled', true)
     } else {
       $('#username_error').html(`
         <span class="text-danger" id="username_status"><i class="bi bi-x-circle"></i> ${data}</span>
       `)
-      $('#submit_btn').prop('disabled', true)
+      $('#submit-btn').prop('disabled', true)
     }
   }
   
