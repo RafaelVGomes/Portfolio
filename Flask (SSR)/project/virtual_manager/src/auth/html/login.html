@@ -1,17 +1,24 @@
 {% extends "layout.html" %}
+{% from "partials/macros.html" import error %}
 
 {% block title %}
-    Log In
+  Log In
 {% endblock %}
 
 {% block main %}
-    <form action="{{ url_for('auth.login') }}" method="post">
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text">
-        </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
-        </div>
-        <button class="btn btn-primary" type="submit">Log In</button>
-    </form>
+  <script src="{{ url_for('auth.static', filename='js/login.js')}}"></script>
+
+  <form action="{{ url_for('auth.login') }}" method="POST">
+    <div class="mb-3">
+      <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username"
+        placeholder="Username" type="text">
+      {{ error('username') }}
+    </div>
+    <div class="mb-3">
+      <input autocomplete="off" class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password"
+        type="password">
+      {{ error('password') }}
+    </div>
+    <button class="btn btn-primary" id="submit-btn" type="submit">Log In</button>
+  </form>
 {% endblock %}
