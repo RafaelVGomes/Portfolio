@@ -1,0 +1,19 @@
+{% macro error(input_id, font_size='small', color='red') %}
+  {% if input_id %}
+    <div class="my-1" id="{{ input_id }}_error">
+      {% with errors=get_flashed_messages(with_categories=true) %}
+        {% if errors %}
+          {% for id, error in errors %}
+            {% if input_id == id %}
+              <p style="color: {{ color }}; font-size: {{ font_size }};">
+                {{ error }}
+              </p>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+  {% else %}
+    {% include "partials/macro_help_text.html" %}
+  {% endif %}
+{% endmacro %}

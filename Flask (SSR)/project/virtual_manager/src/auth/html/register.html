@@ -1,20 +1,32 @@
 {% extends "layout.html" %}
+{% from "partials/macros.html" import error %}
 
 {% block title %}
-    Register
+  Register
 {% endblock title %}
 
 {% block main %}
-    <form action="{{ url_for('auth.register') }}" method="post">
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text">
-        </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
-        </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" id="confirmation" name="confirmation" placeholder="Confirm password" type="password">
-        </div>
-        <button class="btn btn-primary" type="submit">Register</button>
-    </form>
+  <script src="{{ url_for('auth.static', filename='js/register.js')}}"></script>
+
+  {% if data %}
+    <div id="data" hidden>
+      {{ data|tojson}}
+    </div>
+  {% endif %}
+
+  <form action="{{ url_for('auth.register') }}" method="post">
+    <div class="mb-3">
+      <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text">
+      {{ error('username') }}
+    </div>
+    <div class="mb-3">
+      <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
+      {{ error('password') }}
+    </div>
+    <div class="mb-3">
+      <input class="form-control mx-auto w-auto" id="confirmation" name="confirmation" placeholder="Confirm password" type="password">
+      {{ error('confirmation') }}
+    </div>
+    <button class="btn btn-success" id="submit_btn" type="submit">Register</button>
+  </form>
 {% endblock main %}

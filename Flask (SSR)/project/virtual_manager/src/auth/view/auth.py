@@ -1,4 +1,5 @@
 import functools
+import json
 from flask import Blueprint, flash, redirect, render_template, request, session, g, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -14,7 +15,7 @@ def login_required(view):
   return wrapped_view
 
 
-bp = Blueprint('auth', __name__, url_prefix='/auth', template_folder='../html')
+bp = Blueprint('auth', __name__, url_prefix='/auth', template_folder='../html', static_folder='../../auth')
 
 @bp.before_app_request
 def load_logged_in_user():
@@ -31,36 +32,65 @@ def load_logged_in_user():
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
   if request.method == 'POST':
-    username = request.form['username'].lower()
-    password = request.form['password']
-    confirmation = request.form['confirmation']
-    db = get_db()
-    error = None
+    form = request.form
+    data = {
+      'username': form.get('username').lower(),
+      'password': form.get('password'),
+      'confirmation': form.get('confirmation'),
+      'errors': 0
+    }
+    
+    if not data['username']:
+      flash('Username is required.', 'username')
+      data['errors'] += 1
 
-    if not username:
-      error = 'Username is required.'
-    elif not password:
-      error = 'Password is required.'
-    elif not confirmation:
-      error = 'Password confirmation is required.'
-    elif password != confirmation:
-      error = "Password confirmation doesn't match"
+    u = get_db().execute("SELECT username FROM users WHERE username = ?", (data['username'],)).fetchone()
+    if u:
+      u = u['username']
+    
+    if u == data['username']:
+      flash('Username unavailable.', 'username')
+      data['errors'] += 1
+    
+    if not data['password']:
+      flash('Password is required.', 'password')
+      data['errors'] += 1
+    
+    if not data['confirmation']:
+      flash('Password confirmation is required.', 'confirmation')
+      data['errors'] += 1
+    elif data['password'] != data['confirmation']:
+      flash("Password confirmation doesn't match.", 'confirmation')
+      data['errors'] += 1
 
-    if error is None:
+    if data['errors']:
+      return render_template('register.html', data=data)
+    else:
+      db = get_db()
+      data['password'] = generate_password_hash(data['password'])
       try:
         db.execute(
-          "INSERT INTO users (username, hash) VALUES (?, ?)",
-          (username, generate_password_hash(password)),
+          "INSERT INTO users (username, hash) VALUES (:username, :password)",
+          (data),
         )
         db.commit()
       except db.IntegrityError:
-        error = f"User {username} is already registered."
+        flash(f"User {data['username']} is already registered.", 'username')
       else:
         return redirect(url_for("auth.login"))
-
-    flash(error)
-
-  return render_template('register.html')
+  
+  q = request.args.get('q')
+  if q:
+    if len(q) < 3:
+      return json.dumps("4 or more letters.")
+    
+    u = get_db().execute("SELECT username FROM users WHERE username = ?", (q.lower(),)).fetchone()
+    if u:
+      u = u['username']
+    
+    return ('false', 'true')[q == u]
+  else:
+    return render_template('register.html')
 
 
 @bp.route('/login', methods=('GET', 'POST'))
@@ -73,12 +103,12 @@ def login():
     user = db.execute(
       "SELECT * FROM users WHERE username = ?", (username,)
     ).fetchone()
-
+    
     if user is None:
       error = 'Incorrect username.'
     elif not check_password_hash(user['hash'], password):
       error = 'Incorrect password.'
-
+    # TODO: implement new error handler
     if error is None:
       session.clear()
       session['user_id'] = user['id']
