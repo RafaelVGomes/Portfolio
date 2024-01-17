@@ -2,14 +2,19 @@
     "python.analysis.typeCheckingMode": "off",
     "python.analysis.autoImportCompletions": true,
     "cSpell.words": [
-        "appcontext",
-        "DECLTYPES",
-        "executescript",
-        "pyfile",
-        "werkzeug"
+      "appcontext",
+      "DECLTYPES",
+      "executescript",
+      "pyfile",
+      "werkzeug"
+    ],
+    "cSpell.ignoreWords": [
+      "dflt"
     ],
     "files.exclude": {
         "**/__pycache__": true,
         ".venv": true
-    }
+    },
+    "editor.tabSize": 2,
+    "editor.detectIndentation": false
 }
