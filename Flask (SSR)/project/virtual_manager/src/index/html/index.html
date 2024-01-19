@@ -1,18 +1,11 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Index
+  Index
 {% endblock title %}
 
 {% block main %}
-    <script>
-        {# setInterval(function() {
-            fetch("/?data=table")
-                .then(response => response.text())
-                .then(data => $('#stock-data').html(data))
-        }, 5000) #}
-    </script>
-    <div id="stock-data">
-        {% include "./index_table.html" %}
-    </div>
+  <div id="stock-data">
+    {% include "./index_table.html" %}
+  </div>
 {% endblock main %}

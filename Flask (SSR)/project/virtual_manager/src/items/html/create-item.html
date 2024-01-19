@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% from "partials/macros.html" import error %}
+
+{% block title %}
+  Item - Create
+{% endblock title %}
+
+{% block main %}
+  <script src="{{ url_for('items.static', filename='js/create-item.js')}}"></script>
+
+  {% if data %}
+  <div id="data" hidden>
+    {{ data|tojson }}
+  </div>
+  {% endif %}
+
+  <form action="{{ url_for('items.create_item') }}" method="POST">
+    <div class="mb-3">
+      <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="item_name" name="item_name"
+        placeholder="Item name" type="text">
+      {{ error('item_name') }}
+    </div>
+    <div class="mb-3">
+      <input autocomplete="off" class="form-control mx-auto w-auto" id="amount" name="amount" placeholder="Amount"
+        type="number" step="0.1" min="0">
+      {{ error('amount') }}
+    </div>
+    <div class="mb-3">
+      <select class="form-select mx-auto w-auto" name="measure" id="measure" aria-label="Unit of measurement">
+        <option value="" selected>Unit of measurement</option>
+        <option value="Kg">Kg</option>
+        <option value="L">L</option>
+        <option value="Unit">Unit</option>
+      </select>
+      {{ error('measure') }}
+    </div>
+    <div class="mb-3">
+      <input autocomplete="off" class="form-control mx-auto w-auto" id="quantity_alert" name="quantity_alert"
+        placeholder="Quantity alert" type="number" step="0.1" min="0">
+      {{ error('quantity_alert') }}
+    </div>
+    <div class="mb-3">
+      <input autocomplete="off" class="form-control mx-auto w-auto" id="price" name="price" placeholder="Price"
+        type="number" step="0.01" min="0">
+      {{ error('price') }}
+    </div>
+    <p>Is this item for sale?</p>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="is_product" id="is_product0" value="0" checked>
+      <label class="form-check-label" for="is_product0">
+        No
+      </label>
+    </div>
+    <div class="form-check form-check-inline mb-3">
+      <input class="form-check-input" type="radio" name="is_product" id="is_product1" value="1">
+      <label class="form-check-label" for="is_product1">
+        Yes
+      </label>
+    </div>
+    {{ error('is_product') }}
+    <div class="mb-3" id="salePriceDiv" style="display: none;">
+      <input autocomplete="off" class="form-control mx-auto w-auto" id="sale_price" name="sale_price"
+        placeholder="Sale price" type="number" step="0.01" min="0">
+      {{ error('sale_price') }}
+    </div>
+    <div>
+      <button class="btn btn-success" type="submit">Create</button>
+      <a href="{{ url_for('items.overview')}}" role="button" class="btn btn-danger">Cancel</a>
+    </div>
+  </form>
+{% endblock main %}

@@ -43,7 +43,7 @@ $(document).ready(function () {
         this.cancel()
       }
 
-      this.timeoutID = setTimeout(fetch_username_status, 3000)
+      this.timeoutID = setTimeout(fetch_username_status, 2000)
     },
     
     cancel() {

@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  Items History
+{% endblock title %}
+
+{% block main %}
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>User</th>
+      <th>Item</th>
+      <th>Trade</th>
+      <th>Price</th>
+      <th>Amount</th>
+      <th>Measure</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if history %}
+    {% for entry in history %}
+    <tr>
+      <td>{{ entry['date'] }}</td>
+      <td>{{ entry['username'] }}</td>
+      <td>{{ entry['item_name']|title }}</td>
+      <td>{{ entry['trade'] }}</td>
+      <td>{{ entry['price']|usd }}</td>
+      <td>{{ entry['amount'] }}</td>
+      <td>{{ entry['measure'] }}</td>
+      <td>{{ entry['total']|usd }}</td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+      <td colspan="8">No entries.</td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>
+<a href="{{ url_for('items.overview')}}" role="button" class="btn btn-primary">Back</a>
+{% endblock main %}

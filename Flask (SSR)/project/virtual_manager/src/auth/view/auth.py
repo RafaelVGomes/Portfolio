@@ -1,5 +1,4 @@
 import functools
-import json
 from flask import Blueprint, flash, redirect, render_template, request, session, g, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -76,19 +75,17 @@ def register():
         db.commit()
       except db.IntegrityError:
         flash(f"User {data['username']} is already registered.", 'username')
+        return render_template('register.html', data=data)
       else:
         return redirect(url_for("auth.login"))
   
   q = request.args.get('q')
   if q:
-    if len(q) < 3:
-      return json.dumps("4 or more letters.")
-    
     u = get_db().execute("SELECT username FROM users WHERE username = ?", (q.lower(),)).fetchone()
     if u:
-      u = u['username']
-    
-    return ('false', 'true')[q == u]
+      return ('false', 'true')[q == u['username']]
+    else:
+      return 'false'
   else:
     return render_template('register.html')
 
@@ -96,26 +93,39 @@ def register():
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
   if request.method == 'POST':
+    db = get_db()
     username = request.form['username']
     password = request.form['password']
-    db = get_db()
-    error = None
-    user = db.execute(
-      "SELECT * FROM users WHERE username = ?", (username,)
-    ).fetchone()
+    user = False
+    hash = False
+    errors = 0
     
-    if user is None:
-      error = 'Incorrect username.'
-    elif not check_password_hash(user['hash'], password):
-      error = 'Incorrect password.'
-    # TODO: implement new error handler
-    if error is None:
+    if not username:
+      flash("Enter a username.", 'username')
+      errors += 1
+    else:
+      user = db.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
+    
+    if not password :
+      flash("Enter a password.", 'password')
+      errors += 1
+    
+    if user:
+      hash = check_password_hash(user['hash'], password)
+    
+    if user == None or hash == False:
+      flash("Invalid username or password.", 'password')
+      errors += 1
+    elif not user['is_active']:
+      flash("Contact an administrator.", 'password')
+      errors += 1
+
+    if errors:
+      return redirect(url_for('auth.login'))
+    else:
       session.clear()
       session['user_id'] = user['id']
       return redirect(url_for('index'))
-
-    flash(error)
-
   return render_template('login.html')
 
 
