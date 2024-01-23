@@ -1,20 +1,30 @@
 {
-    "python.analysis.typeCheckingMode": "off",
-    "python.analysis.autoImportCompletions": true,
-    "cSpell.words": [
-      "appcontext",
-      "DECLTYPES",
-      "executescript",
-      "pyfile",
-      "werkzeug"
-    ],
-    "cSpell.ignoreWords": [
-      "dflt"
-    ],
-    "files.exclude": {
-        "**/__pycache__": true,
-        ".venv": true
-    },
-    "editor.tabSize": 2,
-    "editor.detectIndentation": false
+  "files.associations": {
+    "*.html": "jinja-html"
+  },
+  "workbench.iconTheme": "material-icon-theme",
+  "emmet.includeLanguages": {
+      "jinja-html": "html"
+  },
+  "material-icon-theme.languages.associations": {
+      "jinja-html": "html"
+  },
+  "python.analysis.typeCheckingMode": "off",
+  "python.analysis.autoImportCompletions": true,
+  "cSpell.words": [
+    "appcontext",
+    "DECLTYPES",
+    "executescript",
+    "pyfile",
+    "werkzeug"
+  ],
+  "cSpell.ignoreWords": [
+    "dflt"
+  ],
+  "files.exclude": {
+      "**/__pycache__": true,
+      ".venv": true
+  },
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false
 }
