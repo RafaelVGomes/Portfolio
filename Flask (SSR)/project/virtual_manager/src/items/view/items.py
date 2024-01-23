@@ -1,6 +1,7 @@
-from flask import Blueprint, flash, redirect, render_template, request, g, url_for, json
+from flask import Blueprint, flash, redirect, render_template, request, g, url_for
 
 from virtual_manager.db import get_db
+from virtual_manager.helpers import updated_columns
 from virtual_manager.src.auth.view.auth import login_required
 
 
@@ -22,7 +23,6 @@ def create_item():
   """Create item"""
   if request.method == "POST":
     data = {
-      'user_id': g.user['id'],
       'item_name': request.form.get("item_name"),
       'amount': request.form.get("amount", type=int),
       'measure': request.form.get("measure"),
@@ -68,6 +68,7 @@ def create_item():
       return render_template("create-item.html", data=data)
     else:
       db = get_db()
+      data['user_id'] = g.user['id']
       
       db.execute(
         """--sql
@@ -76,11 +77,24 @@ def create_item():
         """, (data)
       )
 
+      db.execute(
+        """--sql
+        INSERT INTO items_log (user_id, operation, item_name)
+        VALUES (:user_id, 'created', :item_name);
+        """, (data)
+      )
+
       data['total'] = data['amount'] * data['price']
-      db.execute("INSERT INTO items_history (user_id, item_name, trade, price, amount, measure, total) VALUES (:user_id, :item_name, 'purchase', :price, :amount, :measure, :total)", (data))
+      db.execute(
+        """--sql
+        INSERT INTO items_history (user_id, item_name, trade, price, amount, measure, total)
+        VALUES (:user_id, :item_name, 'purchase', :price, :amount, :measure, :total)
+        """, (data)
+      )
       
       purchase_value = round(data['amount'] * data['price'], 2)
       db.execute("UPDATE users SET cash = users.cash - ? WHERE id = ?", (purchase_value, data['user_id']))
+
       db.commit()
       return redirect(url_for("items.create_item"))
     
@@ -129,7 +143,26 @@ def update_item(id):
       return render_template("update-item.html", item=data)
     else:
       data['id'] = id
-      db.execute("UPDATE items SET amount = :amount, price = :price, quantity_alert = :quantity_alert, measure = :measure, is_product = :is_product, sale_price = :sale_price WHERE id = :id", (data))
+      db.execute(
+        """--sql
+        UPDATE items SET amount = :amount, price = :price, quantity_alert = :quantity_alert, measure = :measure, is_product = :is_product, sale_price = :sale_price WHERE id = :id;
+        """, (data)
+      )
+
+      data['user_id'] = g.user['id']
+      data['item_name'] = item['item_name']
+      for col, values in updated_columns(item, data).items():
+        data['item_field'] = col
+        data['old_value'] = values['old']
+        data['new_value'] = values['new']
+
+        db.execute(
+          """--sql
+          INSERT INTO items_log (user_id, operation, item_name, item_field, old_value, new_value)
+          VALUES (:user_id, 'updated', :item_name, :item_field, :old_value, :new_value);
+          """, (data)
+        )
+
       db.commit()
       return redirect(url_for("items.overview"))
   
@@ -141,8 +174,21 @@ def update_item(id):
 def delete_item(id):
     """Erase item"""
     # TODO: control who can delete items
+    data = {}
     db = get_db()
+
+    data['user_id'] = g.user['id']
+    data['item_name'] = db.execute("SELECT item_name FROM items WHERE id = ?", (id,)).fetchone()['item_name']
+    
     db.execute("DELETE FROM items WHERE id = ?", (id,))
+    
+    db.execute(
+        """--sql
+        INSERT INTO items_log (user_id, operation, item_name)
+        VALUES (:user_id, 'deleted', :item_name);
+        """, (data)
+      )
+    
     db.commit()
     return redirect(url_for("items.overview"))
 
@@ -159,4 +205,15 @@ def history():
   ).fetchall()
   return render_template("items-history.html", history=history)
 
-# TODO: create items_log
+@bp.route("/log")
+@login_required
+def log():
+  """Historic of purchases and sales"""
+  db = get_db()
+  log = db.execute(
+    """--sql
+      SELECT DATETIME(l.date, 'localtime') as date, u.username, l.item_name, l.operation, l.item_field, l.old_value, l.new_value FROM users as u, items_log as l WHERE l.user_id = u.id AND u.id = ?;
+    """,
+    (g.user['id'],)
+  ).fetchall()
+  return render_template("items-log.html", log=log)

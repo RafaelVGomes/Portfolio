@@ -11,15 +11,16 @@ CREATE TABLE users (
 CREATE INDEX idx_users ON users (id, username, is_active, is_staff);
 
 
+
 CREATE TABLE items (
   id INTEGER PRIMARY KEY,
   user_id INTEGER NOT NULL,
   item_name TEXT NOT NULL UNIQUE,
-  amount NUMERIC NOT NULL,
+  amount NUMERIC NOT NULL DEFAULT 0,
   measure TEXT NOT NULL,
-  quantity_alert INTEGER NOT NULL,
-  price NUMERIC NOT NULL,
-  is_product INTEGER NOT NULL,
+  quantity_alert INTEGER NOT NULL DEFAULT 0,
+  price NUMERIC  DEFAULT 0,
+  is_product INTEGER NOT NULL DEFAULT 0,
   sale_price NUMERIC DEFAULT "-",
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
@@ -30,11 +31,11 @@ CREATE TABLE items_log (
   id INTEGER PRIMARY KEY,
   date TEXT DEFAULT CURRENT_TIMESTAMP,
   user_id INTEGER NOT NULL,
+  operation TEXT NOT NULL,
   item_name TEXT NOT NULL,
   item_field TEXT DEFAULT "-",
-  operation TEXT NOT NULL,
-  old_value TEXT,
-  new_value TEXT NOT NULL,
+  old_value TEXT DEFAULT "-",
+  new_value TEXT DEFAULT "-",
   FOREIGN KEY (user_id) REFERENCES users (id)
     ON UPDATE NO ACTION
     ON DELETE NO ACTION
@@ -46,11 +47,11 @@ CREATE TABLE items_history (
   id INTEGER PRIMARY KEY,
   date TEXT DEFAULT CURRENT_TIMESTAMP,
   user_id INTEGER NOT NULL,
-  item_name TEXT NOT NULL,
   trade TEXT NOT NULL,
-  price TEXT NOT NULL,
   amount TEXT NOT NULL,
   measure TEXT NOT NULL,
+  item_name TEXT NOT NULL,
+  price TEXT NOT NULL,
   total  NUMERIC NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users (id)
     ON UPDATE NO ACTION
@@ -60,35 +61,40 @@ CREATE TABLE items_history (
 CREATE INDEX idx_items_history ON items_history (id, date, user_id, item_name, trade);
 
 
--- CREATE TABLE products (
---     id INTEGER PRIMARY KEY,
---     product_name TEXT NOT NULL UNIQUE,
---     amount NUMERIC NOT NULL,
---     measure TEXT NOT NULL,
---     quantity_alert INTEGER,
---     price NUMERIC NOT NULL,
---     has_recipe INTEGER NOT NULL
--- );
--- CREATE INDEX idx_product ON products (id, product_name);
+CREATE TABLE products (
+  id INTEGER PRIMARY KEY,
+  product_name TEXT NOT NULL UNIQUE,
+  amount NUMERIC NOT NULL,
+  measure TEXT NOT NULL,
+  quantity_alert INTEGER,
+  price NUMERIC NOT NULL,
+  has_recipe INTEGER NOT NULL
+);
+
+CREATE INDEX idx_product ON products (id, product_name);
 
 
--- CREATE TABLE recipes (
---     product_id INTEGER PRIMARY KEY,
---     item_id INTEGER NOT NULL,
---     amount NUMERIC NOT NULL,
---     FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE,
---     FOREIGN KEY (item_id) REFERENCES items (id) ON DELETE CASCADE
--- );
--- CREATE INDEX idx_recipes ON recipes (product_id, item_id);
+CREATE TABLE recipes (
+  product_id INTEGER PRIMARY KEY,
+  item_id INTEGER NOT NULL,
+  amount NUMERIC NOT NULL,
+  FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE,
+  FOREIGN KEY (item_id) REFERENCES items (id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_recipes ON recipes (product_id, item_id);
 
 
--- CREATE TABLE historic (
---     id INTEGER PRIMARY KEY,
---     user_id INTEGER NOT NULL,
---     date TEXT DEFAULT CURRENT_TIMESTAMP,
---     trade TEXT NOT NULL,
---     price NUMERIC NOT NULL,
---     amount INTEGER NOT NULL,
---     FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE
--- );
--- CREATE INDEX idx_historic ON historic (user_id, date, trade);
+CREATE TABLE menu (
+  id INTEGER PRIMARY KEY,
+  product_id INTEGER,
+  item_id INTEGER,
+  FOREIGN KEY (product_id) REFERENCES products (id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+  FOREIGN KEY (item_id) REFERENCES items (id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+);
+
+CREATE INDEX idx_menu ON menu (id, product_id, item_id);
