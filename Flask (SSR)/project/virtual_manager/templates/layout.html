@@ -38,9 +38,8 @@
             <ul class="navbar-nav me-auto mt-2" id="index-tabs">
               <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Overview</a></li>
               <li class="nav-item"><a class="nav-link" href="{{ url_for('items.overview') }}">Items</a></li>
-              {# <li class="nav-item"><a class="nav-link" href="/products">Products</a></li>
-              <li class="nav-item"><a class="nav-link" href="/sale">Sale</a></li>
-              <li class="nav-item"><a class="nav-link" href="/history">History</a></li> #}
+              <li class="nav-item"><a class="nav-link disabled" href="/products">Products</a></li>
+              <li class="nav-item"><a class="nav-link disabled" href="/sale">Sales</a></li>
             </ul>
             <ul class="navbar-nav ms-auto mt-2">
               <li class="navbar-text text-info me-3">User: <b>{{ g.user['username'] }}</b></li>
@@ -59,6 +58,10 @@
         </div>
       </div>
     </nav>
+
+    <div class="alert alert-info text-center" role="alert">
+      Under <strong>development</strong>.
+    </div>
     
     <!-- Debug flash messages -->
     {# {% if get_flashed_messages() %}
