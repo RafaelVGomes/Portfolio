@@ -1,6 +1,5 @@
 import os
 from flask import Flask
-from flask_session import Session
 
 from virtual_manager.helpers import usd
 
