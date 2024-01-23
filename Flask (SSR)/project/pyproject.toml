@@ -1,0 +1,11 @@
+[project]
+name = "virtual_manager"
+version = "1.0.0"
+description = "A basic inventory and finances app manager."
+dependencies = [
+    "flask",
+]
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"
