@@ -10,11 +10,11 @@
     <tr>
       <th>Date</th>
       <th>User</th>
-      <th>Item</th>
       <th>Trade</th>
-      <th>Price</th>
       <th>Amount</th>
       <th>Measure</th>
+      <th>Item</th>
+      <th>Price</th>
       <th>Total</th>
     </tr>
   </thead>
@@ -24,11 +24,11 @@
     <tr>
       <td>{{ entry['date'] }}</td>
       <td>{{ entry['username'] }}</td>
-      <td>{{ entry['item_name']|title }}</td>
       <td>{{ entry['trade'] }}</td>
-      <td>{{ entry['price']|usd }}</td>
       <td>{{ entry['amount'] }}</td>
       <td>{{ entry['measure'] }}</td>
+      <td>{{ entry['item_name']|title }}</td>
+      <td>{{ entry['price']|usd }}</td>
       <td>{{ entry['total']|usd }}</td>
     </tr>
     {% endfor %}
