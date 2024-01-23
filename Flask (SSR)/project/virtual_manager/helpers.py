@@ -16,6 +16,15 @@ def percent_diff(current_value, previous_value):
   return round(float((current_value / previous_value - 1) * 100), 2)
 
 
+def updated_columns(old_values:dict, new_values:dict) -> dict:
+  """Returns column names that have their values changed"""
+  cols = {}
+  for col in new_values.keys():
+    if col in old_values.keys() and new_values[col] != old_values[col]:
+      cols[col] = {'new': new_values[col], 'old': old_values[col]}
+  return cols
+
+
 def form_factory(request: Request, table_name: str, custom_fields: dict | list, exclude: list = ['id'], validate: True|False = False) -> dict:
   """
   Generates form field data from database, accepts custom fields and returns
@@ -80,5 +89,5 @@ def form_factory(request: Request, table_name: str, custom_fields: dict | list, 
     else:
       data[field['name']] = form.get(field['name'], '', type=field['data_type'])
 
-  pprint(data)
+  # pprint(data)
   return data
