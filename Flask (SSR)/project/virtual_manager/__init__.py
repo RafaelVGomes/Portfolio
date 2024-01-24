@@ -1,7 +1,7 @@
 import os
 from flask import Flask
 
-from virtual_manager.helpers import usd
+from virtual_manager.helpers import usd, format_field_name
 
 # Configure application
 def create_app(test_config=None):
@@ -12,6 +12,7 @@ def create_app(test_config=None):
 
     # Custom filter
     app.jinja_env.filters["usd"] = usd
+    app.jinja_env.filters["field"] = format_field_name
 
     if test_config is None:
       # load the instance config, if it exists, when not testing

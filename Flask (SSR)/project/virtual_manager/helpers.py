@@ -2,12 +2,13 @@ from pprint import pprint
 from flask import Request
 from virtual_manager.db import get_db
 
+
 def usd(value):
   """Format value as USD."""
   if value == None:
     return '-'
   else:
-    return f"${value:,.2f}"
+    return f"${float(value):.2f}"
   
 
 def percent_diff(current_value, previous_value):
@@ -22,6 +23,12 @@ def updated_columns(old_values:dict, new_values:dict) -> dict:
     if col in old_values.keys() and new_values[col] != old_values[col]:
       cols[col] = {'new': new_values[col], 'old': old_values[col]}
   return cols
+
+
+def format_field_name(name:str) -> str:
+  name = name.replace('_', ' ').title()
+  return name
+
 
 
 def form_factory(request: Request, table_name: str, custom_fields: dict | list, exclude: list = ['id'], validate: True|False = False) -> dict:
