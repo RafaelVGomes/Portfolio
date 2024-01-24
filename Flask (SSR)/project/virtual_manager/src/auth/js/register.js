@@ -54,6 +54,7 @@ $(document).ready(function () {
   $('#username').keyup(function () {
     flag = null
     q = $(this).val()
+    $(this).val(q.toLowerCase())
 
     $('#username_error').html(`
       <div class="text-secondary" id="username_spinner">
