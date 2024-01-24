@@ -4,11 +4,10 @@ from virtual_manager.db import get_db
 
 def usd(value):
   """Format value as USD."""
-  try:
-    value = float(value)
+  if value == None:
+    return '-'
+  else:
     return f"${value:,.2f}"
-  except ValueError:
-    return "Not a float."
   
 
 def percent_diff(current_value, previous_value):
