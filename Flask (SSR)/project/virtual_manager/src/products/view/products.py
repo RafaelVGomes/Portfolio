@@ -5,7 +5,7 @@ from virtual_manager.helpers import updated_columns
 from virtual_manager.src.auth.view.auth import login_required
 
 
-bp = Blueprint('products', __name__, url_prefix='/products', template_folder='../html', static_folder='../../products')
+bp = Blueprint('products', __name__, url_prefix='/products', template_folder='../html', static_folder='../../products', static_url_path='/')
 
 @bp.route("/overview")
 @login_required
@@ -17,24 +17,24 @@ def overview():
   return render_template("products.html", products=products)
 
 
-@bp.route("/create-item", methods=["GET", "POST"])
+@bp.route("/create-product", methods=["GET", "POST"])
 @login_required
-def create_item():
-  """Create item"""
+def create_product():
+  """Create product"""
   if request.method == "POST":
     data = {
-      'item_name': request.form.get("item_name"),
+      'product_name': request.form.get("product_name"),
       'amount': request.form.get("amount", type=int),
       'measure': request.form.get("measure"),
       'quantity_alert': request.form.get("quantity_alert", type=int),
       'price': request.form.get("price", type=float),
-      'is_product': request.form.get("is_product", type=int),
-      'sale_price': request.form.get("sale_price", type=float),
+      'has_recipe': request.form.get("has_recipe", type=int),
+      'inline_total': request.form.get("inlineFormsTotal", type=int),
       'errors': 0
     }
-    print('prod:', data['is_product'])
-    if not data['item_name']:
-      flash("Please enter an item name.", 'item_name')
+
+    if not data['product_name']:
+      flash("Please enter an product name.", 'product_name')
       data['errors'] += 1
 
     if not data['amount']:
@@ -56,49 +56,60 @@ def create_item():
       flash("Please enter a price.", 'price')
       data['errors'] += 1
 
-    if data['is_product'] not in [0, 1]:
-      flash("Invalid option.", 'is_product')
+    if data['has_recipe'] not in [0, 1]:
+      flash("Invalid option.", 'has_recipe')
       data['errors'] += 1
 
-    if data['is_product'] == 1 and not data['sale_price']:
+    if data['has_recipe'] == 1 and not data['sale_price']:
       flash("Please enter a sale price.", 'sale_price')
       data['errors'] += 1
+
     
     if data['errors']:
-      return render_template("create-item.html", data=data)
+      return render_template("create-product.html", data=data)
     else:
       db = get_db()
       data['user_id'] = g.user['id']
       
-      db.execute(
+      prod_id = db.execute(
         """--sql
-        INSERT INTO items (user_id, item_name, amount, measure, quantity_alert, price, sale_price, is_product)
-        VALUES (:user_id, :item_name, :amount, :measure, :quantity_alert, :price, :sale_price, :is_product);
+        INSERT INTO products (user_id, product_name, amount, measure, quantity_alert, price, has_recipe)
+        VALUES (:user_id, :product_name, :amount, :measure, :quantity_alert, :price, :has_recipe);
         """, (data)
-      )
-
-      db.execute(
-        """--sql
-        INSERT INTO items_log (user_id, operation, item_name)
-        VALUES (:user_id, 'created', :item_name);
-        """, (data)
-      )
-
-      data['total'] = data['amount'] * data['price']
-      db.execute(
-        """--sql
-        INSERT INTO items_history (user_id, item_name, trade, price, amount, measure, total)
-        VALUES (:user_id, :item_name, 'purchase', :price, :amount, :measure, :total)
-        """, (data)
-      )
+      ).lastrowid
       
-      purchase_value = round(data['amount'] * data['price'], 2)
-      db.execute("UPDATE users SET cash = users.cash - ? WHERE id = ?", (purchase_value, data['user_id']))
+      # for i in range(data['inline_total']):
+      #   inline_forms = request.form.getlist(f"recipe_items_{i}")
+      #   id_and_name = inline_forms[0].split(',')
+      #   item_id = id_and_name[0]
+      #   item_name = id_and_name[1]
+      #   item_amount = inline_forms[1]
+
+      #   db.execute("INSERT INTO recipes (product_id, item_id, item_name, amount) VALUES (?,?,?,?)", prod_id, item_id, item_name, item_amount)
+      #   db.execute("UPDATE items SET amount = items.amount - ? WHERE id = ?", round(data['amount'] * item_amount, 1), item_id)
+
+      # db.execute(
+      #   """--sql
+      #   INSERT INTO products_log (user_id, operation, product_name)
+      #   VALUES (:user_id, 'created', :product_name);
+      #   """, (data)
+      # )
+
+      # data['total'] = data['amount'] * data['price']
+      # db.execute(
+      #   """--sql
+      #   INSERT INTO products_history (user_id, product_name, trade, price, amount, measure, total)
+      #   VALUES (:user_id, :product_name, 'purchase', :price, :amount, :measure, :total)
+      #   """, (data)
+      # )
+      
+      # purchase_value = round(data['amount'] * data['price'], 2)
+      # db.execute("UPDATE users SET cash = users.cash - ? WHERE id = ?", (purchase_value, data['user_id']))
 
       db.commit()
-      return redirect(url_for("items.create_item"))
+      return redirect(url_for("products.create_product"))
     
-  return render_template("create-item.html")
+  return render_template("create-product.html")
 
 
 @bp.route("/update-item/<int:id>", methods=["GET", "POST"])
@@ -115,7 +126,7 @@ def update_item(id):
       'quantity_alert': request.form.get("quantity_alert", type=int),
       'price': request.form.get("price", type=float),
       'sale_price': request.form.get("sale_price", type=float),
-      'is_product': request.form.get("is_product", type=int),
+      'has_recipe': request.form.get("has_recipe", type=int),
       'errors': 0
     }
     

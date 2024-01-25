@@ -14,8 +14,7 @@ def index():
   user_id = g.user['id']
   cash = db.execute("SELECT cash FROM users WHERE id = ?;", (user_id,)).fetchone()['cash']
   items = db.execute("SELECT * FROM items WHERE user_id = ?;", (user_id,)).fetchall()
-  # products = db.execute("SELECT * FROM products;").fetchall()
+  products = db.execute("SELECT * FROM products;").fetchall()
   # recipes = db.execute("SELECT * FROM recipes;").fetchall()
-  products = []
   return render_template("index.html", cash=cash, items=items, products=products)
   
