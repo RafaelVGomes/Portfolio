@@ -63,6 +63,7 @@ CREATE INDEX idx_items_history ON items_history (id, date, user_id, item_name, t
 
 CREATE TABLE products (
   id INTEGER PRIMARY KEY,
+  user_id INTEGER NOT NULL,
   product_name TEXT NOT NULL UNIQUE,
   amount NUMERIC NOT NULL,
   measure TEXT NOT NULL,
