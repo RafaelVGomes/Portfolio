@@ -15,6 +15,7 @@
     "appcontext",
     "DECLTYPES",
     "executescript",
+    "lastrowid",
     "pyfile",
     "werkzeug"
   ],
