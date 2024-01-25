@@ -19,6 +19,12 @@
         type="password">
       {{ error('password') }}
     </div>
-    <button class="btn btn-success" id="submit-btn" type="submit">Log In</button>
+    <div class="mb-3">
+      <button class="btn btn-success" id="submit-btn" type="submit">Log In</button>
+    </div>
+    <small>
+      Don't have an <strong style="color: blue;">account</strong>?
+      <a href="{{ url_for('auth.register')}}">Register</a> one!
+    </small>
   </form>
 {% endblock %}
