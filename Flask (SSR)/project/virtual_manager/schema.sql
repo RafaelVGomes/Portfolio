@@ -83,18 +83,3 @@ CREATE TABLE recipes (
 );
 
 CREATE INDEX idx_recipes ON recipes (product_id, item_id);
-
-
-CREATE TABLE menu (
-  id INTEGER PRIMARY KEY,
-  product_id INTEGER,
-  item_id INTEGER,
-  FOREIGN KEY (product_id) REFERENCES products (id)
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
-  FOREIGN KEY (item_id) REFERENCES items (id)
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
-);
-
-CREATE INDEX idx_menu ON menu (id, product_id, item_id);
