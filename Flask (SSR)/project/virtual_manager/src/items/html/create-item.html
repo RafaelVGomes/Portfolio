@@ -8,6 +8,8 @@
 {% block main %}
   <script src="{{ url_for('items.static', filename='js/create-item.js')}}"></script>
 
+  <h4 class="mb-3">Create Items</h4>
+
   {% if data %}
   <div id="data" hidden>
     {{ data|tojson }}
@@ -63,7 +65,7 @@
         placeholder="Sale price" type="number" step="0.01" min="0">
       {{ error('sale_price') }}
     </div>
-    <div>
+    <div class="mb-3">
       <button class="btn btn-success" type="submit">Create</button>
       <a href="{{ url_for('items.overview')}}" role="button" class="btn btn-danger">Cancel</a>
     </div>

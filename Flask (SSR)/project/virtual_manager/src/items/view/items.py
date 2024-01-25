@@ -32,7 +32,7 @@ def create_item():
       'sale_price': request.form.get("sale_price", type=float),
       'errors': 0
     }
-    print('prod:', data['is_product'])
+    
     if not data['item_name']:
       flash("Please enter an item name.", 'item_name')
       data['errors'] += 1
